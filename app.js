@@ -1,11 +1,11 @@
 // Import and configure dotenv
-import dotenv from "dotenv";
-dotenv.config();
+import dotenv from "dotenv"; // store Password in this file .env
+dotenv.config(); // starting
 import express from "express";
 import bodyParser from "body-parser";
 import ejs from "ejs";
 import pg from "pg";
-import bcrypt from "bcrypt";
+import bcrypt from "bcrypt"; // ecripting passward before store in database
 
 //deixando o DB mais seguro
 // Now you can access environment variables
@@ -20,10 +20,10 @@ const db = new pg.Client({
 });
 console.log(process.env.API_KEY);
 
-// Hashing a password
-const hashedPassword = await bcrypt.hash("password", 10);
-// Verifying a password
-const isPasswordValid = await bcrypt.compare("password", hashedPassword);
+// // Hashing a password - usar na hora de receber passward do usuario e codificar -> colocar dentro de app.post
+// const hashedPassword = await bcrypt.hash("password", 10);
+// // Verifying a password - descodificar e verificar -> colocar dentro de app.post
+// const isPasswordValid = await bcrypt.compare("password", hashedPassword);
 
 const app = express();
 const port = 3000;
@@ -65,7 +65,7 @@ app.get("/secrets", function (req, res) {
 app.post("/register", async function (req, res) {
   const { username, password } = req.body;
   try {
-    // Hash the password
+    // Hashing a password - usar na hora de receber passward do usuario e codificar
     const hashedPassword = await bcrypt.hash(password, 10);
     // Create a SQL query to update the data in the "client_contact" table
     const query = `
@@ -93,6 +93,7 @@ app.post("/login", async function (req, res) {
   const user = result.rows[0]; // Assuming there is only one user with the provided username
   // if theres a user than check password
   if (user) {
+    //Verifying a password - descodificar e verificar senha in login
     const isPasswordValid = await bcrypt.compare(password, user.password); // Verify the password
     if (isPasswordValid) {
       // User with matching credentials found, redirect to the secret page
@@ -110,3 +111,4 @@ app.post("/login", async function (req, res) {
 app.listen(port, () => {
   console.log(`Server running on port ${port}.`);
 });
+//teste
