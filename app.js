@@ -36,13 +36,20 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// data in .env file
 // Connect to the PostgreSQL database
 // Create a Sequelize instance and define your User model
-const sequelize = new Sequelize("User-secret", "postgres", "fl123", {
-  host: "localhost",
-  dialect: "postgres",
-});
-//table collun in banco de dados para encryptar e armazenar
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: "localhost",
+    dialect: "postgres",
+  }
+);
+
+//table collunm in banco de dados para encryptar e armazenar
 const User = sequelize.define("users", {
   id: {
     type: DataTypes.INTEGER,
@@ -174,7 +181,7 @@ app.get("/secrets", function (req, res) {
       res.redirect("/error");
     });
 });
-
+//stay in pag
 app.get("/submit", function (req, res) {
   if (req.isAuthenticated()) {
     res.render("submit");
@@ -207,7 +214,7 @@ app.post("/submit", function (req, res) {
       res.redirect("/error"); // Handle the error gracefully
     });
 });
-
+//send to home page
 app.get("/logout", function (req, res) {
   req.logout(function (err) {
     res.redirect("/");
@@ -277,4 +284,3 @@ app.post("/login", function (req, res) {
 app.listen(port, () => {
   console.log(`Server running on port ${port}.`);
 });
-//teste
